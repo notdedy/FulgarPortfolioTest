@@ -148,7 +148,6 @@
 
         .skills-column { min-width: 0; }
 
-        /* Center the Skills, Likes, Dislikes, Image Collections, and YouTube Videos labels. */
         .skills-column .section-header,
         button.section-header[onclick*="galleryinfo"],
         button.section-header[onclick*="youtubeinfo"] {
@@ -731,7 +730,6 @@
                 }, 85);
             }
 
-            // The heading starts empty. Typing begins only after the page finishes fading in.
             document.body.addEventListener("animationend", (event) => {
                 if (event.target === document.body && event.animationName === "pageFadeUp") {
                     typePortfolioTitle();
