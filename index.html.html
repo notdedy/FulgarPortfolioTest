@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Director Fulgar's Portfolio</title>
+
+    <style>
+        html {
+            min-height: 100%;
+            background-image: url("images/mountainbackground.jpg");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: black;
+        }
+
+        body {
+            margin: 30px;
+            min-height: 100vh;
+            background: transparent;
+            color: white;
+            font-family: Arial, sans-serif;
+            opacity: 0;
+            animation: pageFadeUp 1.2s ease-out forwards;
+        }
+
+        @keyframes pageFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        a { color: #66bfff; }
+
+        header h1 {
+            font-size: 45px;
+            color: red;
+            min-height: 1.2em;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0;
+            width: fit-content;
+            max-width: 100%;
+            margin-bottom: 20px;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid #d6d6d6;
+            box-sizing: border-box;
+        }
+
+        nav a {
+            color: #111111;
+            font-weight: bold;
+            text-decoration: none;
+            padding: 8px 12px;
+            display: inline-block;
+        }
+
+        nav a:hover {
+            background: #e5e5e5;
+            text-decoration: underline;
+        }
+
+        .profile-layout {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+        }
+
+        .profile-picture {
+            flex: 0 0 250px;
+            width: 250px;
+            max-width: 100%;
+        }
+
+        .profile-picture img {
+            display: block;
+            width: 250px;
+            max-width: 100%;
+            height: auto;
+        }
+
+        .profile-picture p {
+            margin-top: 8px;
+            text-align: center;
+        }
+
+        .picture-caption { margin-bottom: 25px; }
+
+        .profile-quote {
+            margin-top: 25px;
+            text-align: center;
+            font-style: italic;
+            color: #ff0000;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .profile-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            padding: 5px 10px;
+            cursor: pointer;
+            text-align: left;
+            background: #eeeeee;
+            color: black;
+            border: 1px solid #cccccc;
+            box-sizing: border-box;
+        }
+
+        .section-header h2 { margin: 10px 0; }
+        .arrow { font-size: 16px; }
+
+        .section-content {
+            display: block;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-sizing: border-box;
+        }
+
+        .section-content p { margin: 10px 0; }
+
+        .skills-layout {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            align-items: start;
+        }
+
+        .skills-column { min-width: 0; }
+
+        /* Center the Skills, Likes, Dislikes, Image Collections, and YouTube Videos labels. */
+        .skills-column .section-header,
+        button.section-header[onclick*="galleryinfo"],
+        button.section-header[onclick*="youtubeinfo"] {
+            justify-content: center;
+            position: relative;
+            text-align: center;
+        }
+
+        .skills-column .section-header h2,
+        button.section-header[onclick*="galleryinfo"] h2,
+        button.section-header[onclick*="youtubeinfo"] h2 {
+            width: 100%;
+            text-align: center;
+        }
+
+        .skills-column .section-header .arrow,
+        button.section-header[onclick*="galleryinfo"] .arrow,
+        button.section-header[onclick*="youtubeinfo"] .arrow {
+            position: absolute;
+            right: 12px;
+        }
+
+        .skills-column .section-content {
+            padding: 5px 10px;
+            overflow-wrap: anywhere;
+        }
+
+        .skills-column .section-content ul { padding-left: 25px; }
+
+        table {
+            max-width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 6px;
+            border: 2px solid white;
+            text-align: left;
+        }
+
+        #viewer {
+            display: none;
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            padding: 60px 80px;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            cursor: default;
+            z-index: 9999;
+        }
+
+        #largeImage {
+            display: block;
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border: 2px solid white;
+            box-sizing: border-box;
+        }
+
+        .viewer-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: block;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border: 2px solid white;
+            border-radius: 6px;
+            font-size: 40px;
+            line-height: 1;
+            padding: 12px 16px;
+            cursor: pointer;
+            user-select: none;
+            z-index: 10001;
+        }
+
+        .viewer-arrow:hover { background: rgba(80, 80, 80, 0.95); }
+        #prevImage { left: 20px; }
+        #nextImage { right: 20px; }
+
+        #closeViewer {
+            position: absolute;
+            top: 12px;
+            right: 20px;
+            color: white;
+            font-size: 40px;
+            line-height: 1;
+            cursor: pointer;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid white;
+            border-radius: 5px;
+            padding: 4px 12px;
+            z-index: 10002;
+        }
+
+        .gallery-row {
+            display: flex;
+            flex-direction: row;
+            gap: 25px;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            padding: 15px;
+        }
+
+        .gallery-row img {
+            width: 250px;
+            height: 180px;
+            object-fit: cover;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .gallery-row img:hover { transform: scale(1.04); }
+
+        #career table {
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-sizing: border-box;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #career h2 {
+            text-align: center;
+        }
+
+        .youtube-video {
+            display: inline-block;
+            width: 320px;
+            max-width: 100%;
+            text-align: center;
+            vertical-align: top;
+            margin: 10px;
+        }
+
+        .youtube-video a img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 2px solid white;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .youtube-video p { margin-top: 8px; text-align: center; }
+        #youtubeinfo { text-align: center; }
+
+        .contact-form {
+            width: 100%;
+            max-width: 450px;
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.75);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-sizing: border-box;
+        }
+
+        .contact-form h3 {
+            margin-top: 0;
+            color: red;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            display: block;
+            width: 100%;
+            margin-top: 6px;
+            padding: 10px;
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #aaaaaa;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        .contact-form textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .contact-form button {
+            margin-top: 18px;
+            padding: 10px 20px;
+            color: white;
+            background: #b00000;
+            border: 1px solid white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .contact-form button:hover { background: #e00000; }
+
+        @media (max-width: 700px) {
+            .profile-layout { flex-direction: column; }
+            .profile-picture { flex: 0 1 auto; width: 250px; }
+            .profile-details { width: 100%; }
+            .skills-layout { grid-template-columns: 1fr; }
+            header h1 { font-size: 34px; }
+            table { font-size: 13px; }
+            #viewer { padding: 60px 55px; }
+            .viewer-arrow { font-size: 28px; padding: 10px 11px; }
+            #prevImage { left: 8px; }
+            #nextImage { right: 8px; }
+            #largeImage { max-width: 100%; max-height: 80vh; }
+        }
+
+        #contact {
+            text-align: center;
+        }
+
+        #contact .contact-form {
+            margin: 25px auto;
+            text-align: left;
+        }
+
+        footer {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1 aria-label="Director Fulgar's Portfolio"></h1>
+    </header>
+
+    <nav>
+        <a href="#personal-information">Personal Information</a> |
+        <a href="#skills-interest">Skills &amp; Interests</a> |
+        <a href="#career">Career</a> |
+        <a href="#gallery">Gallery</a> |
+        <a href="#contact">Contact &amp; Links</a>
+    </nav>
+
+    <main>
+        <section id="personal-information">
+            <h2 style="font-size: 30px; font-weight: bold;">P.T Fulgar's Personal File</h2>
+
+            <div class="profile-layout">
+                <div class="profile-picture">
+                    <img src="images/deathprofile1.png"
+                         alt="Death Profile Picture"
+                         style="width: 250px; max-width: 100%; height: auto; cursor: pointer; border: 4px solid black; box-sizing: border-box;"
+                         onclick="openImage()">
+
+                    <p class="picture-caption"><i>Picture of Private Tester Fulgar.</i></p>
+
+                    <p class="profile-quote">
+                        "I'm not gonna change my mind about humanity and society. Society is always cruel, and that's the real reality. Just accept humanity as it is, as the people on planet Earth continue to destroy it with their own actions. Humans are so naive."
+                        <strong>-Fulgar</strong>
+                    </p>
+                </div>
+
+                <div class="profile-details">
+                    <button class="section-header" type="button" onclick="toggleSection('bioinfo', this)" aria-expanded="true">
+                        <h2>Biological Information</h2><span class="arrow">▼</span>
+                    </button>
+                    <div id="bioinfo" class="section-content">
+                        <p><strong>Full Name:</strong> J█████ G███ Fulgar</p>
+                        <p><strong>Alias(es):</strong> Deatherous, Death, La Misánthropa, Joanna, CCL #57</p>
+                        <p><strong>Status:</strong> Active</p>
+                        <p><strong>Born:</strong> August 27, 2006, Philippines</p>
+                        <p><strong>Nationality:</strong>
+                            <a href="https://en.wikipedia.org/wiki/Philippines" target="_blank" rel="noopener noreferrer">
+                                <img src="images/philippine-flag.jpg" alt="Philippine Flag" width="26"></a> Filipino</p>
+                    </div>
+
+                    <button class="section-header" type="button" onclick="toggleSection('physicalinfo', this)" aria-expanded="true">
+                        <h2>Physical Information</h2><span class="arrow">▼</span>
+                    </button>
+                    <div id="physicalinfo" class="section-content">
+                        <p><strong>Gender:</strong> Female</p>
+                        <p><strong>Hair:</strong> Black (formerly), Dark Brown</p>
+                        <p><strong>Eyes:</strong> Brown</p>
+                        <p><strong>Race:</strong> Asian</p>
+                        <p><strong>Species:</strong> Homo Sapiens Sapiens</p>
+                    </div>
+
+                    <button class="section-header" type="button" onclick="toggleSection('moonstoneinfo', this)" aria-expanded="true">
+                        <h2>Moonstone Games Information</h2><span class="arrow">▼</span>
+                    </button>
+                    <div id="moonstoneinfo" class="section-content">
+                        <p><strong>Occupation:</strong> <a href="images/testerproof.png" target="_blank" rel="noopener noreferrer">Private Tester</a> &amp; Animator</p>
+                        <p><strong>Infamy Level:</strong> 250</p>
+                        <p><strong>CCL Rank:</strong> 57</p>
+                        <p><strong>Mutator Level:</strong> 1500+</p>
+                        <p><strong>Reputation:</strong> Notorious/Prominent</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="viewer" onclick="closeImage()" role="dialog" aria-label="Image viewer" aria-modal="true">
+                <button id="closeViewer" type="button" aria-label="Close image viewer"
+                    onclick="closeImage(); event.stopPropagation();">&times;</button>
+                <button id="prevImage" class="viewer-arrow" type="button" aria-label="Previous image"
+                    onclick="changeImage(-1); event.stopPropagation();">&#10094;</button>
+                <img id="largeImage" src="images/deathprofile1.png" alt="Enlarged image"
+                    onclick="event.stopPropagation()">
+                <button id="nextImage" class="viewer-arrow" type="button" aria-label="Next image"
+                    onclick="changeImage(1); event.stopPropagation();">&#10095;</button>
+            </div>
+        </section>
+
+        <section id="skills-interest">
+            <h2 style="font-size: 30px; font-weight: bold;">Skills &amp; Interests</h2>
+
+            <div class="skills-layout">
+                <div class="skills-column">
+                    <button class="section-header" type="button" onclick="toggleSection('skillsinfo', this)" aria-expanded="true">
+                        <h2>Skills</h2><span class="arrow">▼</span>
+                    </button>
+                    <div id="skillsinfo" class="section-content">
+                        <ul>
+                            <li><strong>Languages (some at basic level):</strong> English, Tagalog, Spanish, Indonesian, German, and Russian</li>
+                            <li>3D Animating</li>
+                            <li>Game Mapping &amp; Level Design</li>
+                            <li>Filmmaking, Video Editing &amp; Screenwriting</li>
+                            <li>Painting &amp; Drawing</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="skills-column">
+                    <button class="section-header" type="button" onclick="toggleSection('likesinfo', this)" aria-expanded="true">
+                        <h2>Likes</h2><span class="arrow">▼</span>
+                    </button>
+                    <div id="likesinfo" class="section-content">
+                        <ul>
+                            <li>Animating</li>
+                            <li>Computers</li>
+                            <li>Editing</li>
+                            <li>Traveling</li>
+                            <li>Nature</li>
+                            <li>Animals</li>
+                            <li>Solitude &amp; Independence</li>
+                            <li>Writing</li>
+                            <li>Money</li>
+                            <li>Music</li>
+                            <li>Art</li>
+                            <li>Guns</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="skills-column">
+                    <button class="section-header" type="button" onclick="toggleSection('dislikesinfo', this)" aria-expanded="true">
+                        <h2>Dislikes</h2><span class="arrow">▼</span>
+                    </button>
+                    <div id="dislikesinfo" class="section-content">
+                        <ul>
+                            <li>School</li>
+                            <li>Socializing</li>
+                            <li>Photography (with self in it)</li>
+                            <li>Oppression</li>
+                            <li>Drama</li>
+                            <li>Makeup</li>
+                            <li>Religion</li>
+                            <li>Parties</li>
+                            <li>Being forced to learn something irrelevant</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="career">
+            <h2 style="font-size: 30px; font-weight: bold;">Career</h2>
+            <table>
+                <tr>
+                    <th>Career</th>
+                    <th>Description</th>
+                    <th>Skills</th>
+                </tr>
+                <tr>
+                    <td>Animator</td>
+                    <td>Creates animated films and characters</td>
+                    <td>Animation and Creativity</td>
+                </tr>
+                <tr>
+                    <td>Filmmaker</td>
+                    <td>Creates and directs films</td>
+                    <td>Screenwriting and Video Editing</td>
+                </tr>
+                <tr>
+                    <td>YouTuber</td>
+                    <td>Creates and uploads videos on YouTube</td>
+                    <td>Content Creation, Video Editing, and Audience Engagement</td>
+                </tr>
+                <tr>
+                    <td>Private Tester</td>
+                    <td>Tests games before public release and suggests improvements</td>
+                    <td>Game Testing, Bug Reporting, and Improvement Suggestions</td>
+                </tr>
+            </table>
+        </section>
+
+        <section id="gallery">
+            <h2 style="font-size: 30px; font-weight: bold;">Gallery</h2>
+
+            <button class="section-header" type="button" onclick="toggleSection('galleryinfo', this)" aria-expanded="true">
+                <h2>Image Collections</h2><span class="arrow">▼</span>
+            </button>
+
+            <div id="galleryinfo" class="section-content">
+                <div class="gallery-row">
+                    <img src="images/mybestfriends2026.png" alt="My Best Friends" onclick="openImage(this)">
+                    <img src="images/notofriends.png" alt="Notoriety Friends" onclick="openImage(this)">
+                    <img src="images/irony.jpg" alt="Irony" onclick="openImage(this)">
+                    <img src="images/inspired.png" alt="Inspiration" onclick="openImage(this)">
+                    <img src="images/randomchat1.jpg" alt="Random Chat 1" onclick="openImage(this)">
+                    <img src="images/randomchat2.png" alt="Random Chat 2" onclick="openImage(this)">
+                    <img src="images/randomchat3.png" alt="Random Chat 3" onclick="openImage(this)">
+                    <img src="images/randomchat4.png" alt="Random Chat 4" onclick="openImage(this)">
+                    <img src="images/randomchat5.png" alt="Random Chat 5" onclick="openImage(this)">
+                    <img src="images/randomchat6.png" alt="Random Chat 6" onclick="openImage(this)">
+                    <img src="images/randomchat7.png" alt="Random Chat 7" onclick="openImage(this)">
+                    <img src="images/myinternationfriendscountries.jpg" alt="My International Friends and Countries" onclick="openImage(this)">
+                </div>
+            </div>
+
+            <button class="section-header" type="button" onclick="toggleSection('youtubeinfo', this)" aria-expanded="true">
+                <h2>YouTube Videos</h2><span class="arrow">▼</span>
+            </button>
+
+            <div id="youtubeinfo" class="section-content">
+                <div class="youtube-video">
+                    <a href="https://www.youtube.com/watch?v=tLpmjX-SgKg" target="_blank" rel="noopener noreferrer">
+                        <img src="https://img.youtube.com/vi/tLpmjX-SgKg/hqdefault.jpg" alt="Play testing with Zuina video thumbnail">
+                    </a>
+                    <p><strong>Play testing with Zuina</strong></p>
+                </div>
+
+                <div class="youtube-video">
+                    <a href="https://www.youtube.com/watch?v=MN00dHtv_hU" target="_blank" rel="noopener noreferrer">
+                        <img src="https://img.youtube.com/vi/MN00dHtv_hU/hqdefault.jpg" alt="YouTube video thumbnail 2">
+                    </a>
+                    <p><strong>Randomness</strong></p>
+                </div>
+
+                <div class="youtube-video">
+                    <a href="https://www.youtube.com/watch?v=ae3qIqBFYv4" target="_blank" rel="noopener noreferrer">
+                        <img src="https://img.youtube.com/vi/ae3qIqBFYv4/hqdefault.jpg" alt="YouTube video thumbnail 3">
+                    </a>
+                    <p><strong>Gameplay Failure</strong></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2 style="font-size: 30px; font-weight: bold;">Contacts/Links</h2>
+            <p><strong>Discord:</strong> deatherous</p>
+            <p><strong>Roblox:</strong> <a href="https://www.roblox.com/users/388101296/profile" target="_blank" rel="noopener noreferrer">Deatherous</a></p>
+            <p><strong>Speedrun.com:</strong> <a href="https://www.speedrun.com/users/NotDeatherous" target="_blank" rel="noopener noreferrer">NotDeatherous</a></p>
+
+            <div class="contact-form">
+                <h3>Send Me a Message</h3>
+                <form onsubmit="alert('Message submitted!'); return false;">
+                    <label for="contact-name">Full Name</label>
+                    <input type="text" id="contact-name" name="name" placeholder="Enter your name" required>
+
+                    <label for="contact-email">Email Address</label>
+                    <input type="email" id="contact-email" name="email" placeholder="Enter your email" required>
+
+                    <label for="contact-subject">Subject</label>
+                    <input type="text" id="contact-subject" name="subject" placeholder="Enter subject" required>
+
+                    <label for="contact-message">Message</label>
+                    <textarea id="contact-message" name="message" placeholder="Write your message here..." required></textarea>
+
+                    <button type="submit">Submit Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Director Fulgar's Portfolio</p>
+    </footer>
+
+    <script>
+        let currentImageIndex = -1;
+
+        function openImage(img) {
+            const galleryImages = Array.from(document.querySelectorAll(".gallery-row img"));
+            const largeImage = document.getElementById("largeImage");
+
+            if (img) {
+                currentImageIndex = galleryImages.indexOf(img);
+                largeImage.src = img.src;
+                largeImage.alt = img.alt || "Enlarged gallery image";
+            } else {
+                currentImageIndex = -1;
+                largeImage.src = "images/deathprofile1.png";
+                largeImage.alt = "Enlarged Death Profile Picture";
+            }
+
+            document.getElementById("viewer").style.display = "flex";
+        }
+
+        function changeImage(direction) {
+            const galleryImages = Array.from(document.querySelectorAll(".gallery-row img"));
+            if (galleryImages.length === 0) return;
+
+            if (currentImageIndex < 0) {
+                currentImageIndex = direction > 0 ? 0 : galleryImages.length - 1;
+            } else {
+                currentImageIndex = (currentImageIndex + direction + galleryImages.length) % galleryImages.length;
+            }
+
+            const img = galleryImages[currentImageIndex];
+            const largeImage = document.getElementById("largeImage");
+            largeImage.src = img.src;
+            largeImage.alt = img.alt || "Enlarged gallery image";
+        }
+
+        function closeImage() {
+            document.getElementById("viewer").style.display = "none";
+        }
+
+        function toggleSection(id, button) {
+            const content = document.getElementById(id);
+            const arrow = button.querySelector(".arrow");
+            const isOpen = content.style.display !== "none";
+
+            content.style.display = isOpen ? "none" : "block";
+            arrow.textContent = isOpen ? "▼" : "▲";
+            button.setAttribute("aria-expanded", String(!isOpen));
+        }
+
+        document.addEventListener("keydown", function(event) {
+            const viewer = document.getElementById("viewer");
+            if (viewer.style.display !== "flex") return;
+
+            if (event.key === "Escape") closeImage();
+            if (event.key === "ArrowLeft") changeImage(-1);
+            if (event.key === "ArrowRight") changeImage(1);
+        });
+    </script>
+
+    <script>
+        (() => {
+            const portfolioTitle = document.querySelector("header h1");
+            const fullTitle = "Director Fulgar's Portfolio";
+            let typingTimer = null;
+
+            function typePortfolioTitle() {
+                if (!portfolioTitle) return;
+
+                let characterIndex = 0;
+                portfolioTitle.textContent = "";
+                portfolioTitle.style.borderRight = "3px solid red";
+
+                typingTimer = window.setInterval(() => {
+                    portfolioTitle.textContent += fullTitle.charAt(characterIndex);
+                    characterIndex++;
+
+                    if (characterIndex >= fullTitle.length) {
+                        window.clearInterval(typingTimer);
+                        typingTimer = null;
+                        window.setTimeout(() => {
+                            portfolioTitle.style.borderRight = "none";
+                        }, 500);
+                    }
+                }, 85);
+            }
+
+            // The heading starts empty. Typing begins only after the page finishes fading in.
+            document.body.addEventListener("animationend", (event) => {
+                if (event.target === document.body && event.animationName === "pageFadeUp") {
+                    typePortfolioTitle();
+                }
+            }, { once: true });
+        })();
+    </script>
+</body>
+</html>
